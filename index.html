@@ -848,28 +848,47 @@
       async function loadFeaturedProducts() {
         const container = document.getElementById("productsContainer");
 
-        if (!container) return;
+        if (!container) {
+          console.error("Products container not found");
+          return;
+        }
+
+        // Show loading state
+        container.innerHTML =
+          '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>Loading products...</p></div>';
 
         try {
+          // Fetch all active products
           const response = await window.DesiVibesAPI.products.getProducts({
-            limit: 8,
-            sort: "popularity",
+            limit: 50,
           });
+
+          console.log("API Response:", response);
 
           if (
             response.success &&
             response.products &&
             response.products.length > 0
           ) {
-            // Show only featured products or first 4 products
-            const featuredProducts = response.products
+            // Filter featured products (is_featured = 1) and take first 4
+            let productsToShow = response.products
               .filter((p) => p.is_featured === 1)
               .slice(0, 4);
-            const productsToShow =
-              featuredProducts.length > 0
-                ? featuredProducts
-                : response.products.slice(0, 4);
 
+            // If no featured products, show first 4
+            if (productsToShow.length === 0) {
+              productsToShow = response.products.slice(0, 4);
+            }
+
+            console.log("Products to show:", productsToShow.length);
+
+            if (productsToShow.length === 0) {
+              container.innerHTML =
+                '<p class="text-center">No products available.</p>';
+              return;
+            }
+
+            // Render products
             container.innerHTML = productsToShow
               .map(
                 (product) => `
@@ -877,7 +896,7 @@
                     <div class="product-img">
                         <img src="${product.image_url || "https://via.placeholder.com/300"}" 
                              alt="${escapeHtml(product.name)}" 
-                             loading="lazy"
+                             loading="lazy" 
                              onerror="this.src='https://via.placeholder.com/300'">
                         ${product.original_price > product.sale_price ? '<span class="sale-badge">Sale!</span>' : ""}
                     </div>
@@ -897,23 +916,77 @@
               )
               .join("");
 
+            // Attach cart handlers to new buttons
             attachCartHandlers();
           } else {
+            console.error("No products in response:", response);
             container.innerHTML =
-              '<p class="text-center" style="grid-column: 1/-1;">No products available. Please check back later.</p>';
+              '<p class="text-center">No products available. Please check back later.</p>';
           }
         } catch (error) {
           console.error("Failed to load products:", error);
           container.innerHTML =
-            '<p class="text-center" style="grid-column: 1/-1;">Unable to load products. Please refresh the page.</p>';
+            '<p class="text-center">Unable to load products. Please refresh the page.</p>';
         }
+      }
+
+      // Helper function to escape HTML
+      function escapeHtml(text) {
+        if (!text) return "";
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
       }
 
       function attachCartHandlers() {
         document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
+          // Remove existing listener to avoid duplicates
           btn.removeEventListener("click", handleAddToCart);
           btn.addEventListener("click", handleAddToCart);
         });
+      }
+
+      async function handleAddToCart(e) {
+        const btn = e.currentTarget;
+        const productId = btn.dataset.productId;
+        const productName = btn.dataset.productName;
+        const originalHTML = btn.innerHTML;
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+        btn.disabled = true;
+
+        try {
+          const response = await window.DesiVibesAPI.cart.addToCart(
+            productId,
+            1,
+          );
+          if (response.success) {
+            btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+            setTimeout(() => {
+              btn.innerHTML = originalHTML;
+              btn.disabled = false;
+            }, 2000);
+            showNotification(`${productName} added to cart!`);
+          }
+        } catch (error) {
+          btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+          setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+          }, 2000);
+          showNotification(
+            error.message || "Please login to add to cart",
+            "error",
+          );
+        }
+      }
+
+      function showNotification(message, type = "success") {
+        const notification = document.createElement("div");
+        notification.className = `notification ${type === "error" ? "error" : ""}`;
+        notification.innerHTML = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
       }
 
       async function handleAddToCart(e) {

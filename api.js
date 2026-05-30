@@ -1,33 +1,9 @@
-// api.js - Universal Desi Vibes API Service
-// Works on localhost, Netlify, Hostinger, any hosting
+// api.js - Desi Vibes API Service
 
-// ============ AUTO-DETECT BACKEND URL ============
-// No need to change anything - it detects the environment automatically
+// ============ HARDCODE YOUR RAILWAY BACKEND URL ============
+// IMPORTANT: Replace this with your actual Railway backend URL
+const API_BASE_URL = 'https://desi-vibes-backend-production.up.railway.app/api';
 
-const getBackendUrl = () => {
-    // Get current hostname (e.g., localhost, 192.168.1.100, desi-vibes.netlify.app)
-    const hostname = window.location.hostname;
-    
-    // For local development (localhost or 127.0.0.1)
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return 'http://localhost:5000/api';
-    }
-    
-    // For network IP testing (192.168.x.x, 10.x.x.x)
-    if (hostname.match(/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/)) {
-        return `http://${hostname}:5000/api`;
-    }
-    
-    // For production (Netlify, Hostinger, etc.)
-    // You'll update this when you have a production backend URL
-    // For now, it tries to connect to local backend
-    // When you deploy backend, change this to your production URL
-    return 'http://localhost:5000/api';
-};
-
-const API_BASE_URL = getBackendUrl();
-
-// Log the API URL for debugging (remove in production if needed)
 console.log('🌐 Desi Vibes API URL:', API_BASE_URL);
 
 // ============ HELPER FUNCTIONS ============
@@ -224,15 +200,6 @@ const cartAPI = {
     
     updateQuantity: async (itemId, quantity) => {
         if (!authAPI.isLoggedIn()) {
-            const guestCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
-            const item = guestCart.find(i => i.temp_id === itemId);
-            if (item) {
-                item.quantity = quantity;
-                localStorage.setItem('guest_cart', JSON.stringify(guestCart));
-                document.dispatchEvent(new CustomEvent('cartUpdated', {
-                    detail: { total_items: guestCart.reduce((sum, i) => sum + i.quantity, 0) }
-                }));
-            }
             return { success: true };
         }
         
@@ -244,12 +211,6 @@ const cartAPI = {
     
     removeItem: async (itemId) => {
         if (!authAPI.isLoggedIn()) {
-            const guestCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
-            const newCart = guestCart.filter(i => i.temp_id !== itemId);
-            localStorage.setItem('guest_cart', JSON.stringify(newCart));
-            document.dispatchEvent(new CustomEvent('cartUpdated', {
-                detail: { total_items: newCart.reduce((sum, i) => sum + i.quantity, 0) }
-            }));
             return { success: true };
         }
         
@@ -349,36 +310,6 @@ const reviewAPI = {
     }
 };
 
-// ============ ADMIN API (requires admin token) ============
-
-const adminAPI = {
-    getStats: async () => {
-        return await fetchAPI('/admin/stats');
-    },
-    
-    getAllOrders: async () => {
-        return await fetchAPI('/admin/orders');
-    },
-    
-    updateOrderStatus: async (orderId, status) => {
-        return await fetchAPI(`/admin/orders/${orderId}/status`, {
-            method: 'PUT',
-            body: JSON.stringify({ order_status: status })
-        });
-    },
-    
-    getAllProducts: async () => {
-        return await fetchAPI('/admin/products');
-    },
-    
-    updateProduct: async (productId, data) => {
-        return await fetchAPI(`/admin/products/${productId}`, {
-            method: 'PUT',
-            body: JSON.stringify(data)
-        });
-    }
-};
-
 // ============ LOGOUT ============
 
 const logout = () => {
@@ -386,16 +317,6 @@ const logout = () => {
     document.dispatchEvent(new CustomEvent('authChanged', { detail: { isLoggedIn: false } }));
     window.location.href = 'index.html';
 };
-
-// ============ FOR PRODUCTION: UPDATE THIS WHEN YOU DEPLOY BACKEND ============
-// When you deploy your backend to Hostinger or any cloud service,
-// replace the URL below with your production backend URL.
-// Example: https://your-backend.com/api
-
-const PRODUCTION_BACKEND_URL = ' https://trend-coming-wizard.ngrok-free.dev';
-
-// Uncomment the line below when you deploy backend to production
-// const API_BASE_URL = PRODUCTION_BACKEND_URL;
 
 // ============ EXPORT ============
 
@@ -407,12 +328,11 @@ window.DesiVibesAPI = {
     contact: contactAPI,
     coupons: couponAPI,
     reviews: reviewAPI,
-    admin: adminAPI,
     logout,
     getToken,
     isLoggedIn: authAPI.isLoggedIn,
     getCurrentUser: authAPI.getCurrentUser,
-    getBackendUrl: () => API_BASE_URL  // Helper to see current backend URL
+    getBackendUrl: () => API_BASE_URL
 };
 
 console.log('✅ Desi Vibes API Service Loaded');
