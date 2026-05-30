@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About - Desi Vibes | Premium Handmade Soaps</title>
+    <meta name="description" content="Our journey with Desi Vibes - Creating premium handmade organic soaps with natural ingredients">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Merriweather:wght@700&family=Baloo+Chettan+2:wght@700&family=Alegreya+SC:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Web Components -->
+     <script src="api.js"></script>
+    <script type="module" src="components.js"></script>
+    
+    <style>
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background: linear-gradient(180deg, #ffffff 0%, #e8f5f7 100%);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* ===== MAIN CONTENT AREA ===== */
+        .site-content {
+            flex: 1;
+            width: 100%;
+        }
+        
+        /* ===== PAGE CONTAINER ===== */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+        
+        /* ===== SECTION SPACING ===== */
+        .section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a535c;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h1:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #4ecdc4, #2d7a87);
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: #2d7a87;
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* ===== HERO SECTION ===== */
+        .hero-section {
+            background: linear-gradient(rgba(26, 83, 92, 0.75), rgba(13, 60, 68, 0.8)), 
+                        url('https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+        
+        .hero-section h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            font-family: 'Merriweather', serif;
+        }
+        
+        .hero-section p {
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        /* ===== JOURNEY SECTION ===== */
+        .journey-section {
+            background: white;
+        }
+        
+        .journey-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .journey-step {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbfc 100%);
+            border-radius: 10px;
+            border-left: 5px solid #4ecdc4;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(26, 83, 92, 0.05);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+        
+        .journey-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(26, 83, 92, 0.1);
+            border-left: 5px solid #2d7a87;
+        }
+        
+        .journey-step h3 {
+            color: #1a535c;
+            font-family: 'Merriweather', serif;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .journey-step p {
+            color: #555;
+            line-height: 1.8;
+        }
+        
+        /* ===== STATS SECTION ===== */
+        .stats-section {
+            background: linear-gradient(135deg, #1a535c 0%, #0d3c44 100%);
+            color: white;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 60px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-family: 'Merriweather', serif;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-text {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+        
+        /* ===== TESTIMONIAL SECTION ===== */
+        .testimonial-section {
+            background: linear-gradient(180deg, #ffffff 0%, #f0f9fb 100%);
+        }
+        
+        .testimonial-slider {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.1);
+            border: 1px solid rgba(164, 210, 218, 0.4);
+        }
+        
+        .testimonial-content {
+            font-size: 18px;
+            line-height: 1.8;
+            font-style: italic;
+            margin-bottom: 30px;
+            color: #1a535c;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4ecdc4 0%, #2d7a87 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .author-info h4 {
+            color: #1a535c;
+            margin-bottom: 5px;
+            font-family: 'Merriweather', serif;
+        }
+        
+        .author-info p {
+            color: #2d7a87;
+            font-size: 14px;
+        }
+        
+        /* ===== PRODUCTS SECTION ===== */
+        .products-section {
+            background: white;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-category {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbfc 100%);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(26, 83, 92, 0.08);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .product-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(26, 83, 92, 0.15);
+            border-color: #4ecdc4;
+        }
+        
+        .product-category h3 {
+            color: #1a535c;
+            margin-bottom: 20px;
+            font-family: 'Merriweather', serif;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .product-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #ffffff;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(164, 210, 218, 0.2);
+        }
+        
+        .product-item:hover {
+            background: linear-gradient(90deg, rgba(78, 205, 196, 0.1) 0%, rgba(45, 122, 135, 0.1) 100%);
+            color: #1a535c;
+            transform: translateX(10px);
+            border-color: #4ecdc4;
+        }
+        
+        .product-item i {
+            color: #4ecdc4;
+            margin-right: 15px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .product-item:hover i {
+            color: #1a535c;
+            transform: scale(1.2);
+        }
+        
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            background: linear-gradient(rgba(26, 83, 92, 0.9), rgba(13, 60, 68, 0.95)), 
+                        url('https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+        
+        .cta-section h2 {
+            font-size: 42px;
+            margin-bottom: 30px;
+            font-family: 'Merriweather', serif;
+        }
+        
+        .cta-section p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #4ecdc4 0%, #2d7a87 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(78, 205, 196, 0.4);
+            background: linear-gradient(135deg, #2d7a87 0%, #1a535c 100%);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            box-shadow: none;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: #1a535c;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* ===== RESPONSIVE STYLES ===== */
+        @media (max-width: 992px) {
+            .hero-section h1 {
+                font-size: 42px;
+            }
+            
+            .section-title h1 {
+                font-size: 36px;
+            }
+            
+            .stat-number {
+                font-size: 48px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section {
+                padding: 60px 0;
+            }
+            
+            .hero-section {
+                padding: 80px 20px;
+            }
+            
+            .hero-section h1 {
+                font-size: 36px;
+            }
+            
+            .hero-section p {
+                font-size: 18px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-section h2 {
+                font-size: 32px;
+            }
+            
+            .journey-step {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-container {
+                padding: 0 15px;
+            }
+            
+            .hero-section h1 {
+                font-size: 28px;
+            }
+            
+            .section-title h1 {
+                font-size: 28px;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+            
+            .testimonial-slider {
+                padding: 25px;
+            }
+        }
+        
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        
+        /* ===== SCROLL ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Web Component -->
+    <main-navbar></main-navbar>
+    
+    <!-- Main Content -->
+    <main class="site-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="page-container">
+                <h1 class="animate-fade-in">Our Journey with Desi Vibes</h1>
+                <p class="animate-fade-in delay-1">From a simple idea to creating premium handmade organic soaps that nourish and rejuvenate your skin naturally.</p>
+                <a href="#journey" class="btn btn-outline animate-fade-in delay-2">Discover Our Story</a>
+            </div>
+        </section>
+        
+        <!-- Our Journey Section -->
+        <section id="journey" class="section journey-section">
+            <div class="page-container">
+                <div class="section-title fade-in">
+                    <h1>Our Story</h1>
+                    <p>The journey from concern to creation</p>
+                </div>
+                
+                <div class="journey-content">
+                    <div class="journey-step fade-in">
+                        <h3>The Beginning</h3>
+                        <p>In 2019, our lives took a beautiful turn with the arrival of our baby boy. As new parents, we wanted only the best for him, so we purchased what we thought were the best baby soaps available. However, we soon learned that commercial products contain chemicals that aren't ideal for delicate skin.</p>
+                    </div>
+                    
+                    <div class="journey-step fade-in">
+                        <h3>The Discovery</h3>
+                        <p>We began exploring organic alternatives and discovered homemade soaps prepared with love and care by local homemakers. The difference was remarkable – our baby's skin responded beautifully to these natural products.</p>
+                    </div>
+                    
+                    <div class="journey-step fade-in">
+                        <h3>The Creation</h3>
+                        <p>Inspired by this discovery, we decided to create our own handmade soaps. After extensive research and training, we crafted our first batch with natural ingredients. The results were astounding – soft, nourished skin without any harsh chemicals.</p>
+                    </div>
+                    
+                    <div class="journey-step fade-in">
+                        <h3>The Growth</h3>
+                        <p>Today, Desi Vibes proudly manufactures 18 categories of homemade soaps, each carefully crafted with love and natural ingredients. Our mission continues to expand as we work on introducing more home essentials, including our next venture – aromatic wax candles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Stats Section -->
+        <section class="section stats-section">
+            <div class="page-container">
+                <div class="section-title fade-in">
+                    <h1>Numbers Speak</h1>
+                    <p>Our journey in numbers</p>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-item fade-in">
+                        <div class="stat-number" data-count="4800">0</div>
+                        <div class="stat-text">Happy Customers</div>
+                    </div>
+                    
+                    <div class="stat-item fade-in delay-1">
+                        <div class="stat-number" data-count="80">0</div>
+                        <div class="stat-text">Products Created</div>
+                    </div>
+                    
+                    <div class="stat-item fade-in delay-2">
+                        <div class="stat-number" data-count="18">0</div>
+                        <div class="stat-text">Product Categories</div>
+                    </div>
+                    
+                    <div class="stat-item fade-in delay-3">
+                        <div class="stat-number" data-count="100">0</div>
+                        <div class="stat-text">% Natural Ingredients</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Testimonial Section -->
+        <section class="section testimonial-section">
+            <div class="page-container">
+                <div class="section-title fade-in">
+                    <h1>What Our Customers Say</h1>
+                    <p>Real stories from real people</p>
+                </div>
+                
+                <div class="testimonial-slider fade-in">
+                    <div class="testimonial-content">
+                        "Desi Vibes soaps have completely transformed my skincare routine! The natural ingredients leave my skin feeling soft, hydrated, and refreshed. I love the variety of scents and the fact that each soap is handmade with care. It's the perfect blend of luxury and nature in every bar!"
+                    </div>
+                    
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AS</div>
+                        <div class="author-info">
+                            <h4>Amrish Singh</h4>
+                            <p>Regular Customer Since 2021</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Products Section -->
+        <section class="section products-section">
+            <div class="page-container">
+                <div class="section-title fade-in">
+                    <h1>Our Organic Products</h1>
+                    <p>Handcrafted with natural ingredients</p>
+                </div>
+                
+                <div class="products-grid">
+                    <div class="product-category fade-in">
+                        <h3>Natural Soaps</h3>
+                        <div class="product-item">
+                            <i class="fas fa-leaf"></i>
+                            <span>Aloe Vera & Basil</span>
+                        </div>
+                        <div class="product-item">
+                            <i class="fas fa-leaf"></i>
+                            <span>Rose Petal</span>
+                        </div>
+                        <div class="product-item">
+                            <i class="fas fa-leaf"></i>
+                            <span>Ocean Breeze</span>
+                        </div>
+                        <div class="product-item">
+                            <i class="fas fa-leaf"></i>
+                            <span>Honey & Oatmeal</span>
+                        </div>
+                        <div class="product-item">
+                            <i class="fas fa-leaf"></i>
+                            <span>Natural Lemon Peel</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-category fade-in delay-1">
+                        <h3>Specialty Products</h3>
+                        <div class="product-item">
+                            <i class="fas fa-spa"></i>
+                            <span>Besan Organic</span>
+                        </div>
+                        <div class="product-item">
+                            <i class="fas fa-spa"></i>
+                            <span>Milk & Saffron</span>
+                        </div>
+                        <div class="product-item">
+                            <i class="fas fa-spa"></i>
+                            <span>Multani Mitti & Mulethi</span>
+                        </div>
+                        <div class="product-item">
+                            <i class="fas fa-spa"></i>
+                            <span>Manjistha Oudh</span>
+                        </div>
+                        <div class="product-item">
+                            <i class="fas fa-spa"></i>
+                            <span>Charcoal Detox</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center fade-in delay-2" style="margin-top: 50px;">
+                    <a href="shop.html" class="btn">Explore All Products</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="page-container">
+                <h2 class="fade-in">Experience Natural Beauty</h2>
+                <p class="fade-in delay-1">Join thousands of satisfied customers who have discovered the magic of Desi Vibes handmade soaps.</p>
+                <a href="shop.html" class="btn fade-in delay-2">Shop Now</a>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer Web Component -->
+    <main-footer></main-footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // Scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fade in elements on scroll
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInOnScroll = function() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('visible');
+                    }
+                });
+            };
+            
+            // Run on load and scroll
+            fadeInOnScroll();
+            window.addEventListener('scroll', fadeInOnScroll);
+            
+            // Counter animation
+            const counters = document.querySelectorAll('.stat-number');
+            const speed = 200;
+            
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-count');
+                    const count = +counter.innerText;
+                    
+                    const inc = target / speed;
+                    
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + inc);
+                        setTimeout(updateCount, 1);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                
+                // Start counter when in view
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            updateCount();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+                
+                observer.observe(counter);
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+        
+        // Testimonial rotation
+        const testimonials = [
+            {
+                text: "Desi Vibes soaps are simply amazing! My skin has never felt better. The natural ingredients make all the difference.",
+                author: "Priya Sharma",
+                role: "Regular Customer"
+            },
+            {
+                text: "I've tried many organic soaps, but none compare to Desi Vibes. The quality and attention to detail are exceptional.",
+                author: "Raj Patel",
+                role: "Wellness Enthusiast"
+            },
+            {
+                text: "The perfect gift for anyone who cares about their skin. My entire family now uses Desi Vibes products exclusively.",
+                author: "Anita Desai",
+                role: "Loyal Customer Since 2020"
+            }
+        ];
+        
+        let currentTestimonial = 0;
+        
+        function rotateTestimonial() {
+            const testimonialContent = document.querySelector('.testimonial-content');
+            const authorAvatar = document.querySelector('.author-avatar');
+            const authorName = document.querySelector('.author-info h4');
+            const authorRole = document.querySelector('.author-info p');
+            
+            if (testimonialContent && authorAvatar && authorName && authorRole) {
+                currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+                const testimonial = testimonials[currentTestimonial];
+                
+                testimonialContent.style.opacity = '0';
+                
+                setTimeout(() => {
+                    testimonialContent.textContent = `"${testimonial.text}"`;
+                    authorAvatar.textContent = testimonial.author.split(' ').map(n => n[0]).join('');
+                    authorName.textContent = testimonial.author;
+                    authorRole.textContent = testimonial.role;
+                    testimonialContent.style.opacity = '1';
+                }, 300);
+            }
+        }
+        
+        // Rotate testimonials every 5 seconds
+        setInterval(rotateTestimonial, 5000);
+    </script>
+</body>
+</html>

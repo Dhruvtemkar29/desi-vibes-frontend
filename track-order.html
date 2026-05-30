@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - Desi Vibes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="api.js"></script>
+    <script type="module" src="components.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #e8f5f7 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        .track-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.1);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+        
+        .track-input {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .track-input input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid rgba(164, 210, 218, 0.4);
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .track-input button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .track-input button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .order-details {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .order-details.show {
+            display: block;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-delivered { background: #28a745; color: white; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        
+        .timeline {
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .timeline-item {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            z-index: 2;
+        }
+        
+        .timeline-icon.completed {
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            color: white;
+        }
+        
+        .timeline-icon i {
+            font-size: 16px;
+        }
+        
+        .timeline-content {
+            flex: 1;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            color: #1a535c;
+        }
+        
+        .timeline-date {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -30px;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        
+        .tracking-number {
+            background: #f8fbfc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .tracking-number a {
+            color: #4ecdc4;
+            text-decoration: none;
+        }
+        
+        h2 {
+            color: #1a535c;
+            margin-bottom: 10px;
+        }
+        
+        .order-info {
+            background: #f8fbfc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .order-info p {
+            margin: 8px 0;
+        }
+        
+        .error-message {
+            color: #ff5252;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .track-input {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .track-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main-navbar></main-navbar>
+    
+    <div class="container">
+        <div class="track-card">
+            <h2><i class="fas fa-truck"></i> Track Your Order</h2>
+            <p>Enter your order number to track delivery status</p>
+            
+            <div class="track-input">
+                <input type="text" id="orderNumber" placeholder="Enter order number (e.g., DV12345678)" autocomplete="off">
+                <button id="trackBtn"><i class="fas fa-search"></i> Track Order</button>
+            </div>
+            
+            <div id="orderDetails" class="order-details"></div>
+        </div>
+    </div>
+    
+    <main-footer></main-footer>
+    
+    <script>
+        const trackBtn = document.getElementById('trackBtn');
+        const orderNumberInput = document.getElementById('orderNumber');
+        const orderDetailsDiv = document.getElementById('orderDetails');
+        
+        async function trackOrder(orderNumber) {
+            orderDetailsDiv.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading order details...</div>';
+            orderDetailsDiv.classList.add('show');
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/orders/track/${orderNumber}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const order = data.order;
+                    const items = data.items;
+                    const timeline = data.timeline;
+                    
+                    const getStatusClass = (status) => {
+                        const classes = {
+                            'pending': 'status-pending',
+                            'processing': 'status-processing',
+                            'shipped': 'status-shipped',
+                            'delivered': 'status-delivered',
+                            'cancelled': 'status-cancelled'
+                        };
+                        return classes[status] || 'status-pending';
+                    };
+                    
+                    orderDetailsDiv.innerHTML = `
+                        <div class="order-info">
+                            <h3>Order #${order.order_number}</h3>
+                            <p><strong>Status:</strong> <span class="status-badge ${getStatusClass(order.order_status)}">${order.order_status.toUpperCase()}</span></p>
+                            <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleDateString()}</p>
+                            <p><strong>Total Amount:</strong> ₹${order.final_amount}</p>
+                            <p><strong>Payment Method:</strong> ${order.payment_method.toUpperCase()}</p>
+                            <p><strong>Payment Status:</strong> ${order.payment_status}</p>
+                        </div>
+                        
+                        <div class="timeline">
+                            ${timeline.map((item, index) => `
+                                <div class="timeline-item">
+                                    <div class="timeline-icon ${item.completed ? 'completed' : ''}">
+                                        <i class="fas ${item.completed ? 'fa-check' : index === 0 ? 'fa-clock' : 'fa-circle'}"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title">${item.label}</div>
+                                        ${item.date ? `<div class="timeline-date">${new Date(item.date).toLocaleDateString()}</div>` : ''}
+                                    </div>
+                                    ${index < timeline.length - 1 ? '<div class="timeline-line"></div>' : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        ${order.tracking_number ? `
+                            <div class="tracking-number">
+                                <i class="fas fa-shipping-fast"></i> Tracking Number: 
+                                ${order.tracking_url ? `<a href="${order.tracking_url}" target="_blank">${order.tracking_number}</a>` : order.tracking_number}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="order-info">
+                            <h4>Shipping Address</h4>
+                            <p>${order.shipping_name}<br>
+                            ${order.shipping_address}<br>
+                            ${order.shipping_city}, ${order.shipping_state} - ${order.shipping_pincode}<br>
+                            Phone: ${order.shipping_phone}</p>
+                        </div>
+                        
+                        <div class="order-info">
+                            <h4>Order Items</h4>
+                            ${items.map(item => `
+                                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                                    <span>${item.product_name} × ${item.quantity}</span>
+                                    <span>₹${item.total_price}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    orderDetailsDiv.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle"></i> ${data.message}</div>`;
+                }
+            } catch (error) {
+                orderDetailsDiv.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-triangle"></i> Failed to track order. Please try again.</div>`;
+                console.error('Track order error:', error);
+            }
+        }
+        
+        trackBtn.addEventListener('click', () => {
+            const orderNumber = orderNumberInput.value.trim();
+            if (orderNumber) {
+                trackOrder(orderNumber);
+            } else {
+                alert('Please enter an order number');
+            }
+        });
+        
+        orderNumberInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                trackBtn.click();
+            }
+        });
+        
+        // Check if order number is in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderNumberFromUrl = urlParams.get('order');
+        if (orderNumberFromUrl) {
+            orderNumberInput.value = orderNumberFromUrl;
+            trackOrder(orderNumberFromUrl);
+        }
+    </script>
+</body>
+</html>

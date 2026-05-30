@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop - Desi Vibes Organic Soaps</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="api.js"></script>
+    <script type="module" src="components.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(180deg, #ffffff 0%, #e8f5f7 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Page Header */
+      .page-header {
+        text-align: center;
+        padding: 60px 0;
+        background: linear-gradient(180deg, #ffffff 0%, #c9e7ed 100%);
+      }
+
+      .page-header h1 {
+        font-size: 42px;
+        font-weight: 700;
+        color: #1a535c;
+        margin-bottom: 10px;
+      }
+
+      .page-header p {
+        font-size: 18px;
+        color: #2d7a87;
+      }
+
+      /* Main Content */
+      .main-content {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 40px;
+        padding: 60px 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(26, 83, 92, 0.08);
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+        border: 1px solid rgba(164, 210, 218, 0.3);
+      }
+
+      .widget {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(164, 210, 218, 0.2);
+      }
+
+      .widget:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .widget-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a535c;
+        margin-bottom: 15px;
+        position: relative;
+        padding-bottom: 8px;
+      }
+
+      .widget-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(90deg, #4ecdc4, #2d7a87);
+        border-radius: 2px;
+      }
+
+      /* Search */
+      .search-form {
+        position: relative;
+      }
+
+      .search-form input {
+        width: 100%;
+        padding: 12px 45px 12px 15px;
+        border: 2px solid rgba(164, 210, 218, 0.4);
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: #f8fbfc;
+      }
+
+      .search-form input:focus {
+        outline: none;
+        border-color: #4ecdc4;
+      }
+
+      .search-form button {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(135deg, #4ecdc4 0%, #2d7a87 100%);
+        color: white;
+        border: none;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      /* Category List */
+      .category-list li {
+        margin-bottom: 10px;
+      }
+
+      .category-list a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: #f8fbfc;
+        border: 1px solid rgba(164, 210, 218, 0.2);
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .category-list a:hover,
+      .category-list a.active {
+        background: linear-gradient(
+          90deg,
+          rgba(78, 205, 196, 0.1),
+          rgba(45, 122, 135, 0.1)
+        );
+        color: #1a535c;
+        border-color: #4ecdc4;
+      }
+
+      /* Price Filter */
+      .price-inputs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .price-inputs input {
+        width: 100%;
+        padding: 8px;
+        border: 2px solid rgba(164, 210, 218, 0.4);
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      /* Sort Select */
+      .sort-select {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid rgba(164, 210, 218, 0.4);
+        border-radius: 8px;
+        font-size: 14px;
+        background: #f8fbfc;
+        cursor: pointer;
+      }
+
+      /* Filter Buttons */
+      .filter-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .apply-btn,
+      .reset-btn {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .apply-btn {
+        background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+        color: white;
+        border: none;
+      }
+
+      .reset-btn {
+        background: transparent;
+        border: 2px solid #4ecdc4;
+        color: #4ecdc4;
+      }
+
+      /* Products Grid */
+      .products-grid {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .results-count {
+        color: #2d7a87;
+        font-size: 14px;
+        margin-bottom: 20px;
+        padding: 12px 15px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid rgba(164, 210, 218, 0.3);
+      }
+
+      .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 25px;
+      }
+
+      .product-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(26, 83, 92, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(164, 210, 218, 0.3);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(26, 83, 92, 0.15);
+        border-color: #4ecdc4;
+      }
+
+      .product-image {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+      }
+
+      .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .product-card:hover .product-image img {
+        transform: scale(1.05);
+      }
+
+      .sale-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: linear-gradient(135deg, #ff6b6b, #ff5252);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        z-index: 2;
+      }
+
+      .product-info {
+        padding: 15px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .product-category {
+        display: inline-block;
+        background: rgba(78, 205, 196, 0.1);
+        color: #2d7a87;
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-bottom: 8px;
+        font-weight: 600;
+        align-self: flex-start;
+      }
+
+      .product-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #1a535c;
+        line-height: 1.4;
+        display: block;
+        transition: color 0.3s ease;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .product-title:hover {
+        color: #4ecdc4;
+      }
+
+      .product-price {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      .original-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 12px;
+      }
+
+      .sale-price {
+        font-size: 18px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .add-to-cart-btn {
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: auto;
+      }
+
+      .add-to-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+      }
+
+      .add-to-cart-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(164, 210, 218, 0.4);
+      }
+
+      .page-numbers {
+        display: flex;
+        gap: 8px;
+        list-style: none;
+        flex-wrap: wrap;
+      }
+
+      .page-numbers a,
+      .page-numbers span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 0 10px;
+        border: 2px solid rgba(164, 210, 218, 0.4);
+        border-radius: 8px;
+        color: #2d7a87;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .page-numbers .current {
+        background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+        color: white;
+        border-color: #4ecdc4;
+      }
+
+      .page-numbers a:hover {
+        background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+        color: white;
+        border-color: #4ecdc4;
+      }
+
+      /* Loading & Empty States */
+      .loading-state,
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        grid-column: 1/-1;
+      }
+
+      .loading-state i {
+        font-size: 48px;
+        color: #4ecdc4;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Notification */
+      .notification {
+        position: fixed;
+        bottom: 100px;
+        right: 20px;
+        background: #4ecdc4;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .notification.error {
+        background: #ff5252;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 992px) {
+        .main-content {
+          grid-template-columns: 1fr;
+          gap: 30px;
+        }
+        .sidebar {
+          position: static;
+          order: 2;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .page-header h1 {
+          font-size: 32px;
+        }
+        .products {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 15px;
+        }
+        .product-image {
+          height: 180px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .products {
+          grid-template-columns: 1fr;
+        }
+        .price-inputs {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main-navbar></main-navbar>
+
+    <section class="page-header">
+      <div class="container">
+        <h1>Our Organic Collection</h1>
+        <p>Premium Handmade Organic Soaps for Every Skin Type</p>
+      </div>
+    </section>
+
+    <div class="container main-content">
+      <aside class="sidebar">
+        <div class="widget">
+          <h3 class="widget-title">Search Products</h3>
+          <div class="search-form">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search organic soaps..."
+            />
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+          </div>
+        </div>
+
+        <div class="widget">
+          <h3 class="widget-title">Shop by Category</h3>
+          <ul class="category-list" id="categoryList">
+            <li>
+              <a data-category="all" class="active"
+                >All Products <span id="allCount">(0)</span></a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="widget">
+          <h3 class="widget-title">Filter by Price</h3>
+          <div class="price-inputs">
+            <input type="number" id="minPrice" placeholder="Min ₹" value="0" />
+            <input
+              type="number"
+              id="maxPrice"
+              placeholder="Max ₹"
+              value="500"
+            />
+          </div>
+        </div>
+
+        <div class="widget">
+          <h3 class="widget-title">Sort by</h3>
+          <select id="sortSelect" class="sort-select">
+            <option value="latest">Latest</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="price_high">Price: High to Low</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button id="applyFiltersBtn" class="apply-btn">Apply Filters</button>
+          <button id="resetFiltersBtn" class="reset-btn">Reset</button>
+        </div>
+      </aside>
+
+      <main class="products-grid">
+        <div class="results-count" id="resultsCount">Loading products...</div>
+        <div class="products" id="productsContainer">
+          <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading products...</p>
+          </div>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </main>
+    </div>
+
+    <main-footer></main-footer>
+
+   <script>
+    // State
+    let currentFilters = {
+        page: 1,
+        category: 'all',
+        minPrice: 0,
+        maxPrice: 500,
+        sort: 'latest',
+        search: ''
+    };
+    
+    let totalPages = 1;
+    let totalProducts = 0;
+    
+    // DOM Elements
+    const productsContainer = document.getElementById('productsContainer');
+    const resultsCount = document.getElementById('resultsCount');
+    const paginationDiv = document.getElementById('pagination');
+    const categoryList = document.getElementById('categoryList');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const minPriceInput = document.getElementById('minPrice');
+    const maxPriceInput = document.getElementById('maxPrice');
+    const sortSelect = document.getElementById('sortSelect');
+    const applyBtn = document.getElementById('applyFiltersBtn');
+    const resetBtn = document.getElementById('resetFiltersBtn');
+    
+    // Load Products
+    async function loadProducts() {
+        productsContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading products...</p></div>';
+        
+        const params = new URLSearchParams({
+            page: currentFilters.page,
+            limit: 12,
+            sort: currentFilters.sort
+        });
+        
+        if (currentFilters.category && currentFilters.category !== 'all') {
+            params.append('category', currentFilters.category);
+        }
+        if (currentFilters.minPrice > 0) {
+            params.append('minPrice', currentFilters.minPrice);
+        }
+        if (currentFilters.maxPrice < 500) {
+            params.append('maxPrice', currentFilters.maxPrice);
+        }
+        if (currentFilters.search) {
+            params.append('search', currentFilters.search);
+        }
+        
+        try {
+            const response = await window.DesiVibesAPI.products.getProducts(Object.fromEntries(params));
+            
+            if (response.success) {
+                renderProducts(response.products);
+                updatePagination(response.pagination);
+                resultsCount.innerHTML = `Showing ${response.pagination.total_items} products (Page ${response.pagination.current_page} of ${response.pagination.total_pages})`;
+            } else {
+                throw new Error('Failed to load products');
+            }
+        } catch (error) {
+            console.error('Load products error:', error);
+            productsContainer.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Failed to load products. Make sure backend is running.</p></div>';
+        }
+    }
+    
+    // Load Categories - FIXED
+    async function loadCategories() {
+        try {
+            // First, get total products count
+            const productsResponse = await window.DesiVibesAPI.products.getProducts({ limit: 1 });
+            totalProducts = productsResponse.success ? productsResponse.pagination.total_items : 0;
+            
+            // Then get categories
+            const response = await window.DesiVibesAPI.products.getCategories();
+            
+            if (response.success && response.categories) {
+                let html = `<li><a data-category="all" class="${currentFilters.category === 'all' ? 'active' : ''}">All Products <span>(${totalProducts})</span></a></li>`;
+                
+                response.categories.forEach(cat => {
+                    html += `<li><a data-category="${cat.category}" class="${currentFilters.category === cat.category ? 'active' : ''}">${cat.category} <span>(${cat.count})</span></a></li>`;
+                });
+                
+                categoryList.innerHTML = html;
+                
+                // Add click handlers
+                document.querySelectorAll('.category-list a').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('.category-list a').forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+                        currentFilters.category = link.dataset.category;
+                        currentFilters.page = 1;
+                        loadProducts();
+                    });
+                });
+            }
+        } catch (error) {
+            console.error('Load categories error:', error);
+            // Fallback - show categories without count
+            categoryList.innerHTML = '<li><a data-category="all" class="active">All Products</a></li>';
+        }
+    }
+    
+    // Render Products
+    function renderProducts(products) {
+        if (!products || products.length === 0) {
+            productsContainer.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No products found matching your criteria.</p></div>';
+            return;
+        }
+        
+        productsContainer.innerHTML = products.map(product => `
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="${product.image_url || 'https://via.placeholder.com/300'}" alt="${escapeHtml(product.name)}" onerror="this.src='https://via.placeholder.com/300'">
+                    ${product.original_price > product.sale_price ? '<span class="sale-badge">Sale!</span>' : ''}
+                </div>
+                <div class="product-info">
+                    <span class="product-category">${escapeHtml(product.category || 'Organic Soap')}</span>
+                    <a href="product.html?id=${product.id}" class="product-title">${escapeHtml(product.name)}</a>
+                    <div class="product-price">
+                        ${product.original_price > product.sale_price ? `<span class="original-price">₹${product.original_price}</span>` : ''}
+                        <span class="sale-price">₹${product.sale_price}</span>
+                    </div>
+                    <button class="add-to-cart-btn" data-product-id="${product.id}" data-product-name="${escapeHtml(product.name)}">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        attachCartHandlers();
+    }
+    
+    // Update Pagination
+    function updatePagination(pagination) {
+        if (!pagination || pagination.total_pages <= 1) {
+            paginationDiv.innerHTML = '';
+            return;
+        }
+        
+        totalPages = pagination.total_pages;
+        let html = '<ul class="page-numbers">';
+        
+        for (let i = 1; i <= pagination.total_pages; i++) {
+            if (i === pagination.current_page) {
+                html += `<li><span class="current">${i}</span></li>`;
+            } else if (i === 1 || i === pagination.total_pages || (i >= pagination.current_page - 2 && i <= pagination.current_page + 2)) {
+                html += `<li><a data-page="${i}">${i}</a></li>`;
+            } else if (i === pagination.current_page - 3 || i === pagination.current_page + 3) {
+                html += `<li><span>...</span></li>`;
+            }
+        }
+        
+        html += '</ul>';
+        paginationDiv.innerHTML = html;
+        
+        document.querySelectorAll('.page-numbers a[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentFilters.page = parseInt(link.dataset.page);
+                loadProducts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    }
+    
+    // Cart Handlers
+    function attachCartHandlers() {
+        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+            btn.removeEventListener('click', handleAddToCart);
+            btn.addEventListener('click', handleAddToCart);
+        });
+    }
+    
+    async function handleAddToCart(e) {
+        const btn = e.currentTarget;
+        const productId = btn.dataset.productId;
+        const productName = btn.dataset.productName;
+        const originalHTML = btn.innerHTML;
+        
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+        
+        try {
+            const response = await window.DesiVibesAPI.cart.addToCart(productId, 1);
+            if (response.success) {
+                btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }, 2000);
+                showNotification(`${productName} added to cart!`);
+            }
+        } catch (error) {
+            btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }, 2000);
+            showNotification(error.message || 'Please login to add to cart', 'error');
+        }
+    }
+    
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+        notification.innerHTML = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Filter Handlers
+    function applyFilters() {
+        currentFilters.minPrice = parseInt(minPriceInput.value) || 0;
+        currentFilters.maxPrice = parseInt(maxPriceInput.value) || 500;
+        currentFilters.sort = sortSelect.value;
+        currentFilters.page = 1;
+        loadProducts();
+    }
+    
+    function resetFilters() {
+        currentFilters = {
+            page: 1,
+            category: 'all',
+            minPrice: 0,
+            maxPrice: 500,
+            sort: 'latest',
+            search: ''
+        };
+        searchInput.value = '';
+        minPriceInput.value = 0;
+        maxPriceInput.value = 500;
+        sortSelect.value = 'latest';
+        
+        document.querySelectorAll('.category-list a').forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.category === 'all') {
+                link.classList.add('active');
+            }
+        });
+        
+        loadProducts();
+    }
+    
+    // Event Listeners
+    searchBtn.addEventListener('click', () => {
+        currentFilters.search = searchInput.value;
+        currentFilters.page = 1;
+        loadProducts();
+    });
+    
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            currentFilters.search = searchInput.value;
+            currentFilters.page = 1;
+            loadProducts();
+        }
+    });
+    
+    applyBtn.addEventListener('click', applyFilters);
+    resetBtn.addEventListener('click', resetFilters);
+    
+    // Initialize
+    async function init() {
+        await loadCategories();
+        await loadProducts();
+    }
+    
+    init();
+</script>
+  </body>
+</html>

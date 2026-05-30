@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Desi Vibes Organic Soaps</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <script src="api.js"></script>
+    <script type="module" src="components.js"></script>
+    <style>
+        /* Base Styles - Matching Home/Shop */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(180deg, #ffffff 0%, #e8f5f7 100%);
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .text-center { text-align: center; }
+    
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(rgba(26, 83, 92, 0.85), rgba(13, 60, 68, 0.9)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f8f9fa" width="1200" height="600"/><path fill="%234ecdc4" opacity="0.1" d="M0 300 Q300 100 600 300 T1200 300 V600 H0 Z"/></svg>');
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="75" cy="75" r="0.5" fill="%234ecdc4" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+            animation: grain 8s steps(10) infinite;
+        }
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -5%); }
+            90% { transform: translate(5%, 5%); }
+        }
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: #f8f9fa;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero-content p {
+            font-size: 1.25rem;
+            color: rgba(248,249,250,0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    
+        /* Contact Cards Section */
+        .contact-section {
+            padding: 100px 0;
+            background: white;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #1a535c;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #4ecdc4, #2d7a87);
+            border-radius: 2px;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        .contact-card {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbfc 100%);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4ecdc4, #2d7a87, #4ecdc4);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .contact-card:hover::before {
+            transform: scaleX(1);
+        }
+        .contact-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(26, 83, 92, 0.15);
+            border-color: #4ecdc4;
+        }
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+        }
+        .contact-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #1a535c;
+            margin-bottom: 1rem;
+        }
+        .contact-details a {
+            color: #1a535c;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        .contact-details a:hover {
+            color: #4ecdc4;
+            transform: translateX(8px);
+        }
+        .contact-details a.email:hover {
+            background: linear-gradient(135deg, #1a535c, #2d7a87);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .address { 
+            line-height: 1.8;
+            color: #2d7a87;
+        }
+    
+        /* Social Section */
+        .social-section {
+            background: linear-gradient(135deg, #1a535c 0%, #0d3c44 100%);
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .social-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 60%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .social-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+        .social-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            border-color: #4ecdc4;
+        }
+        .social-card h3 {
+            color: #1a535c;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-link {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        .social-link:hover {
+            transform: translateY(-6px) rotate(360deg);
+            box-shadow: 0 12px 30px rgba(78, 205, 196, 0.5);
+            background: linear-gradient(135deg, #2d7a87, #1a535c);
+        }
+    
+        /* FAQ Section */
+        .faq-section {
+            padding: 100px 0;
+            background: linear-gradient(180deg, #f8fbfc 0%, #ffffff 100%);
+        }
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            background: white;
+            margin-bottom: 1rem;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(26, 83, 92, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+        .faq-item:hover {
+            box-shadow: 0 10px 35px rgba(26, 83, 92, 0.12);
+            transform: translateY(-2px);
+            border-color: #4ecdc4;
+        }
+        .faq-question {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a535c;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .faq-question:hover {
+            background: linear-gradient(90deg, rgba(78, 205, 196, 0.1), rgba(45, 122, 135, 0.1));
+            color: #1a535c;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: linear-gradient(180deg, #f8fbfc 0%, #ffffff 100%);
+        }
+        .faq-answer.active {
+            max-height: 300px;
+            padding: 0 2rem 2rem;
+            color: #2d7a87;
+        }
+        .highlight {
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+    
+        /* WhatsApp & Back to Top */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 8px 25px rgba(37,211,102,0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(37,211,102,0.6);
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 110px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .back-to-top:hover {
+            background: linear-gradient(135deg, #2d7a87, #1a535c);
+            transform: translateY(-3px);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(37,211,102,0); }
+            100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
+        }
+    
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 80px 20px;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+            
+            .contact-grid { 
+                grid-template-columns: 1fr;
+            }
+            
+            .social-grid { 
+                flex-direction: column; 
+                align-items: center;
+            }
+            
+            .social-card {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .contact-card {
+                padding: 2rem;
+            }
+            
+            .back-to-top {
+                right: 90px;
+                bottom: 100px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .contact-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8rem;
+            }
+            
+            .social-link {
+                width: 50px;
+                height: 50px;
+                font-size: 1.1rem;
+            }
+            
+            .faq-question {
+                padding: 1.25rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .whatsapp-float,
+            .back-to-top {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .back-to-top {
+                right: 80px;
+            }
+        }
+    
+        /* Additional Styles for Contact Page */
+        .contact-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.1);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+            margin-top: 3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1a535c;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(164, 210, 218, 0.4);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: #f8fbfc;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+            background: white;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4ecdc4 0%, #2d7a87 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+            background: linear-gradient(135deg, #2d7a87 0%, #1a535c 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <main-navbar></main-navbar>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-content text-center">
+            <h1>Let's Connect</h1>
+            <p>Ready to experience the natural goodness of Desi Vibes? We're here to help with your questions about our organic soaps and skincare journey.</p>
+        </div>
+    </section>
+
+    <!-- Contact Cards -->
+    <section class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>Call Us</h3>
+                    <div class="contact-details">
+                        <a href="tel:+917669035666">+91 76690 35666</a>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email Us</h3>
+                    <div class="contact-details">
+                        <a href="mailto:customer.delight@desi-vibes.com">customer.delight@desi-vibes.com</a>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Visit Us</h3>
+                    <div class="contact-details address">
+                        <p>Amrapali Yojana Hardoi</p>
+                        <p>Lucknow - 226101</p>
+                        <p><strong>Uttar Pradesh</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Section -->
+    <section class="social-section">
+        <div class="container">
+            <h2 class="section-title text-center" style="color: white; margin-bottom: 3rem;">Follow Our Journey</h2>
+            <div class="social-grid">
+                <div class="social-card">
+                    <h3>📱 WhatsApp Us</h3>
+                    <p>Instant support for orders & queries</p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/917669035666" class="social-link">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="social-card">
+                    <h3>🌐 Social Media</h3>
+                    <p>Follow us for soap care tips & updates</p>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/profile.php?id=61550250674628" class="social-link">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/desi_vibes24" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCWNA27WTb9T04jNYu6U_Rcg" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Are Desi Vibes soaps safe for all skin types?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! Our soaps are gentle for all skin types. Try <span class="highlight">Coconut with Turmeric</span> for dry skin or <span class="highlight">Neem & Tea Tree</span> for oily skin.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How do I store the soaps to make them last?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Keep soaps dry between uses in a draining soap dish. This prevents dissolving and maintains natural texture.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Safe for sensitive skin & kids?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! <span class="highlight">Aloe Vera & Basil</span> is perfect for sensitive skin and children. Always patch test new soaps.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How often should I use them?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Daily use morning and evening gives best results. Consistency is key for healthy, glowing skin!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+     <main-footer></main-footer>
+
+    <!-- Floating Actions -->
+    <a href="https://wa.me/917669035666?text=Hi!%20I'm%20interested%20in%20Desi%20Vibes%20organic%20soaps" 
+       class="whatsapp-float" target="_blank" title="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="#" class="back-to-top" title="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script>
+        // Smooth FAQ animations
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const answer = btn.nextElementSibling;
+                const icon = btn.querySelector('i');
+                
+                // Close others
+                document.querySelectorAll('.faq-answer').forEach(other => {
+                    if (other !== answer) {
+                        other.classList.remove('active');
+                        other.previousElementSibling.querySelector('i').style.transform = 'rotate(0deg)';
+                    }
+                });
+                
+                // Toggle current
+                answer.classList.toggle('active');
+                icon.style.transform = answer.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+            });
+        });
+
+        // Back to top
+        const backToTop = document.querySelector('.back-to-top');
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('show', window.scrollY > 300);
+        });
+        backToTop.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Mobile menu (if needed)
+        // Add hamburger functionality here if required
+    </script>
+</body>
+</html>

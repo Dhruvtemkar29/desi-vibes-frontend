@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | Desi Vibes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="api.js"></script>
+    <script type="module" src="components.js"></script>
+    <style>
+        :root {
+            --primary: #4ecdc4;
+            --primary-dark: #2d7a87;
+            --secondary: #d4a574;
+            --accent: #8b4513;
+            --light: #f8f5f0;
+            --dark: #2c2c2c;
+            --gray: #777;
+            --light-gray: #f0f0f0;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background: linear-gradient(180deg, #ffffff 0%, #e8f5f7 100%);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(180deg, #ffffff 0%, #c9e7ed 100%);
+            padding: 60px 0;
+            text-align: center;
+            color: rgb(11, 50, 29);
+            margin-top: 0;
+        }
+
+        .hero-banner h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-banner p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Product Section */
+        .product-section {
+            padding: 60px 0;
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        @media (max-width: 992px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Product Images */
+        .product-images {
+            position: relative;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 2;
+        }
+
+        .main-image {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            background: white;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .image-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .thumbnail {
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            background: white;
+        }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: var(--primary);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+        }
+
+        /* Product Info */
+        .product-info h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #1a535c;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .current-price {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .original-price {
+            font-size: 20px;
+            color: var(--gray);
+            text-decoration: line-through;
+        }
+
+        .product-description {
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: var(--dark);
+            line-height: 1.8;
+        }
+
+        .benefits-list {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbfc 100%);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+
+        .benefits-list ul {
+            margin-left: 20px;
+        }
+
+        .benefits-list li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .benefits-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .product-form {
+            margin-bottom: 25px;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .quantity-selector label {
+            font-weight: 600;
+            color: #1a535c;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quantity-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .quantity-input {
+            width: 70px;
+            height: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .add-to-cart-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .wishlist-btn {
+            background-color: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .wishlist-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .wishlist-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .product-meta {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .product-meta span {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Tabs */
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            display: none;
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content h3 {
+            margin-bottom: 15px;
+            color: #1a535c;
+        }
+
+        .ingredients-list {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        .ingredients-list li {
+            margin-bottom: 8px;
+        }
+
+        .product-attributes table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .product-attributes tr {
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-attributes th {
+            text-align: left;
+            padding: 12px 0;
+            width: 30%;
+            font-weight: 600;
+            color: #1a535c;
+        }
+
+        .product-attributes td {
+            padding: 12px 0;
+            color: #2d7a87;
+        }
+
+        /* Reviews */
+        .review-form {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbfc 100%);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-top: 30px;
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a535c;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .star {
+            font-size: 28px;
+            color: #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffc107;
+        }
+
+        .submit-review-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .submit-review-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        /* Related Products */
+        .related-products {
+            padding: 60px 0;
+            background: white;
+            margin-top: 60px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin-bottom: 40px;
+            color: #1a535c;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(26, 83, 92, 0.08);
+            transition: var(--transition);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(26, 83, 92, 0.15);
+            border-color: var(--primary);
+        }
+
+        .product-card .product-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-card .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-card .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .product-details {
+            padding: 20px;
+        }
+
+        .product-card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #1a535c;
+            line-height: 1.4;
+        }
+
+        .product-card .price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .product-card .original-price {
+            color: var(--gray);
+            font-size: 14px;
+            text-decoration: line-through;
+            margin-right: 8px;
+        }
+
+        /* Loading & Error States */
+        .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .loading-state i {
+            font-size: 48px;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #ff5252;
+        }
+
+        .error-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .error-state a {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .notification.error {
+            background: #ff5252;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* WhatsApp Button */
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner {
+                padding: 40px 0;
+            }
+            .hero-banner h1 {
+                font-size: 1.8rem;
+            }
+            .tabs-header {
+                flex-direction: column;
+            }
+            .tab-btn {
+                text-align: center;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <main-navbar></main-navbar>
+
+    <div id="productContent">
+        <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading product details...</p>
+        </div>
+    </div>
+
+    <main-footer></main-footer>
+
+    <a href="https://wa.me/919971046936?text=Hello!%20I'm%20interested%20in%20purchasing%20organic%20soaps%20from%20*Desi%20Vibes*." target="_blank" class="whatsapp-btn">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id') || urlParams.get('slug');
+
+        if (!productId) {
+            document.getElementById('productContent').innerHTML = `
+                <div class="error-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h2>No product specified</h2>
+                    <p>Please go back to the <a href="shop.html">shop page</a> and select a product.</p>
+                </div>
+            `;
+        } else {
+            loadProduct(productId);
+        }
+
+        async function loadProduct(id) {
+            try {
+                const response = await window.DesiVibesAPI.products.getProduct(id);
+                
+                if (response.success && response.product) {
+                    renderProduct(response.product, response.related_products);
+                } else {
+                    throw new Error('Product not found');
+                }
+            } catch (error) {
+                console.error('Error loading product:', error);
+                document.getElementById('productContent').innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>Product Not Found</h2>
+                        <p>The product you're looking for doesn't exist or has been removed.</p>
+                        <a href="shop.html">← Back to Shop</a>
+                    </div>
+                `;
+            }
+        }
+
+        function renderProduct(product, relatedProducts) {
+            const hasSale = product.original_price > product.sale_price;
+            
+            // Parse benefits if stored as JSON or string
+            let benefitsArray = [];
+            if (product.benefits) {
+                if (typeof product.benefits === 'string') {
+                    benefitsArray = product.benefits.split(',').map(b => b.trim());
+                } else if (Array.isArray(product.benefits)) {
+                    benefitsArray = product.benefits;
+                }
+            }
+            
+            // Default benefits if none provided
+            if (benefitsArray.length === 0) {
+                benefitsArray = [
+                    'Deeply moisturizes & nourishes',
+                    'Gently removes tan & impurities',
+                    'Fights signs of aging for youthful skin',
+                    'Clears blackheads for a refined complexion'
+                ];
+            }
+            
+            // Parse ingredients
+            let ingredientsArray = [];
+            if (product.ingredients) {
+                if (typeof product.ingredients === 'string') {
+                    ingredientsArray = product.ingredients.split(',').map(i => i.trim());
+                } else if (Array.isArray(product.ingredients)) {
+                    ingredientsArray = product.ingredients;
+                }
+            }
+            
+            // Default ingredients if none provided
+            if (ingredientsArray.length === 0) {
+                ingredientsArray = [
+                    'Plant-based glycerin',
+                    'Natural essential oils',
+                    'Vitamin E',
+                    'Herbal extracts',
+                    'Natural fragrance'
+                ];
+            }
+
+            // Build images array
+            const mainImage = product.image_url || 'https://via.placeholder.com/600';
+            const thumbnails = [mainImage];
+            if (product.images_json && Array.isArray(product.images_json)) {
+                thumbnails.push(...product.images_json);
+            }
+
+            const html = `
+                <div class="hero-banner">
+                    <div class="container">
+                        <h1>${escapeHtml(product.category || 'Organic Soap')}</h1>
+                        <p>Handcrafted with natural ingredients to nourish and rejuvenate your skin</p>
+                    </div>
+                </div>
+
+                <section class="product-section">
+                    <div class="container product-container">
+                        <div class="product-images">
+                            ${hasSale ? '<div class="product-badge">Sale!</div>' : ''}
+                            <div class="main-image">
+                                <img src="${mainImage}" alt="${escapeHtml(product.name)}" id="mainImage">
+                            </div>
+                            <div class="image-thumbnails" id="thumbnails">
+                                ${thumbnails.map((img, idx) => `
+                                    <div class="thumbnail ${idx === 0 ? 'active' : ''}" data-image="${img}">
+                                        <img src="${img}" alt="Thumbnail ${idx + 1}">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="product-info">
+                            <h1>${escapeHtml(product.name)}</h1>
+                            
+                            <div class="product-price">
+                                <span class="current-price">₹${product.sale_price}</span>
+                                ${hasSale ? `<span class="original-price">₹${product.original_price}</span>` : ''}
+                            </div>
+                            
+                            <div class="product-description">
+                                <p>${escapeHtml(product.description || 'A luxurious organic soap handcrafted with natural ingredients for healthy, glowing skin.')}</p>
+                            </div>
+                            
+                            <div class="benefits-list">
+                                <p><strong>Benefits:</strong></p>
+                                <ul>
+                                    ${benefitsArray.map(benefit => `<li>${escapeHtml(benefit)}</li>`).join('')}
+                                </ul>
+                                <p class="mt-20">🌿 <em>Chemical-free | Cruelty-free | Luxuriously organic</em> 🌿</p>
+                            </div>
+                            
+                            <div class="product-form">
+                                <div class="quantity-selector">
+                                    <label for="quantity">Quantity:</label>
+                                    <div class="quantity-controls">
+                                        <button type="button" class="quantity-btn" id="decreaseQty">-</button>
+                                        <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="${product.stock || 99}">
+                                        <button type="button" class="quantity-btn" id="increaseQty">+</button>
+                                    </div>
+                                </div>
+                                
+                                <button type="button" class="add-to-cart-btn" id="addToCartBtn" data-product-id="${product.id}" data-product-name="${escapeHtml(product.name)}">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                                
+                                <button type="button" class="wishlist-btn" id="wishlistBtn">
+                                    <i class="far fa-heart"></i> Add to Wishlist
+                                </button>
+                            </div>
+                            
+                            <div class="product-meta">
+                                <span><strong>SKU:</strong> ${product.sku || product.id}</span>
+                                <span><strong>Category:</strong> <a href="shop.html?category=${encodeURIComponent(product.category)}">${product.category || 'Organic Soap'}</a></span>
+                                <span><strong>Weight:</strong> ${product.weight || '100 g'}</span>
+                                ${product.stock ? `<span><strong>Stock:</strong> ${product.stock} items available</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="product-tabs">
+                    <div class="container">
+                        <div class="tabs-header">
+                            <div class="tab-btn active" data-tab="description">Description</div>
+                            <div class="tab-btn" data-tab="additional-info">Additional Information</div>
+                            <div class="tab-btn" data-tab="reviews">Reviews</div>
+                        </div>
+                        
+                        <div class="tab-content active" id="description">
+                            <h3>Product Details</h3>
+                            <p><strong>Ingredients:</strong></p>
+                            <ul class="ingredients-list">
+                                ${ingredientsArray.map(ing => `<li>${escapeHtml(ing)}</li>`).join('')}
+                            </ul>
+                            <p class="mt-20">${escapeHtml(product.description || 'This luxurious organic soap combines natural ingredients to gently cleanse while providing deep hydration and nourishment for your skin.')}</p>
+                        </div>
+                        
+                        <div class="tab-content" id="additional-info">
+                            <div class="product-attributes">
+                                <h3>Additional Information</h3>
+                                <table>
+                                    <tr><th>Weight</th><td>${product.weight || '100 g'}</td></tr>
+                                    <tr><th>Dimensions</th><td>${product.dimensions || '8 × 5 × 3 cm'}</td></tr>
+                                    <tr><th>Skin Type</th><td>${product.category || 'All skin types'}</td></tr>
+                                    <tr><th>Benefits</th><td>Moisturizing, Nourishing, Natural</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="reviews">
+                            <h3>Customer Reviews</h3>
+                            <p>Be the first to review this product!</p>
+                            
+                            <div class="review-form">
+                                <h3>Write a Review</h3>
+                                <form id="reviewForm">
+                                    <div class="form-group">
+                                        <label>Your Rating *</label>
+                                        <div class="rating-stars" id="ratingStars">
+                                            <span class="star" data-value="5">★</span>
+                                            <span class="star" data-value="4">★</span>
+                                            <span class="star" data-value="3">★</span>
+                                            <span class="star" data-value="2">★</span>
+                                            <span class="star" data-value="1">★</span>
+                                        </div>
+                                        <input type="hidden" id="rating" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Your Review *</label>
+                                        <textarea id="reviewText" rows="4" placeholder="Share your experience..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Your Name *</label>
+                                        <input type="text" id="reviewerName" placeholder="Enter your name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Your Email *</label>
+                                        <input type="email" id="reviewerEmail" placeholder="Enter your email">
+                                    </div>
+                                    <button type="submit" class="submit-review-btn">Submit Review</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="related-products">
+                    <div class="container">
+                        <h2 class="section-title">You May Also Like</h2>
+                        <div class="products-grid" id="relatedProductsGrid">
+                            ${relatedProducts && relatedProducts.length > 0 ? relatedProducts.map(rel => `
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="${rel.image_url || 'https://via.placeholder.com/250'}" alt="${escapeHtml(rel.name)}">
+                                        ${rel.original_price > rel.sale_price ? '<div class="product-badge">Sale!</div>' : ''}
+                                    </div>
+                                    <div class="product-details">
+                                        <h3>${escapeHtml(rel.name)}</h3>
+                                        <div class="price">
+                                            ${rel.original_price > rel.sale_price ? `<span class="original-price">₹${rel.original_price}</span>` : ''}
+                                            <span>₹${rel.sale_price}</span>
+                                        </div>
+                                        <button class="add-to-cart-btn related-add-to-cart" data-product-id="${rel.id}" data-product-name="${escapeHtml(rel.name)}">
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('') : '<p class="text-center">More products coming soon!</p>'}
+                        </div>
+                    </div>
+                </section>
+            `;
+
+            document.getElementById('productContent').innerHTML = html;
+            attachEventListeners(product);
+            attachRelatedCartHandlers();
+        }
+
+        function attachEventListeners(product) {
+            // Image Gallery
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            const mainImage = document.getElementById('mainImage');
+            
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    const newImage = this.dataset.image;
+                    if (newImage && mainImage) {
+                        mainImage.src = newImage;
+                    }
+                });
+            });
+
+            // Quantity Selector
+            const quantityInput = document.getElementById('quantity');
+            const increaseQty = document.getElementById('increaseQty');
+            const decreaseQty = document.getElementById('decreaseQty');
+
+            if (increaseQty) {
+                increaseQty.addEventListener('click', () => {
+                    let val = parseInt(quantityInput.value);
+                    quantityInput.value = val + 1;
+                });
+            }
+            if (decreaseQty) {
+                decreaseQty.addEventListener('click', () => {
+                    let val = parseInt(quantityInput.value);
+                    if (val > 1) quantityInput.value = val - 1;
+                });
+            }
+
+            // Tabs
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.tab).classList.add('active');
+                });
+            });
+
+            // Rating Stars
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating');
+            
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.dataset.value);
+                    ratingInput.value = value;
+                    stars.forEach(s => {
+                        if (parseInt(s.dataset.value) <= value) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Add to Cart
+            const addToCartBtn = document.getElementById('addToCartBtn');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', async () => {
+                    const productId = addToCartBtn.dataset.productId;
+                    const quantity = parseInt(quantityInput.value);
+                    const originalHTML = addToCartBtn.innerHTML;
+                    
+                    addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+                    addToCartBtn.disabled = true;
+                    
+                    try {
+                        const response = await window.DesiVibesAPI.cart.addToCart(productId, quantity);
+                        if (response.success) {
+                            addToCartBtn.innerHTML = '<i class="fas fa-check"></i> Added to Cart';
+                            setTimeout(() => {
+                                addToCartBtn.innerHTML = originalHTML;
+                                addToCartBtn.disabled = false;
+                            }, 2000);
+                            showNotification('Product added to cart!');
+                        }
+                    } catch (error) {
+                        addToCartBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+                        setTimeout(() => {
+                            addToCartBtn.innerHTML = originalHTML;
+                            addToCartBtn.disabled = false;
+                        }, 2000);
+                        showNotification(error.message || 'Please login to add to cart', 'error');
+                    }
+                });
+            }
+
+            // Wishlist
+            const wishlistBtn = document.getElementById('wishlistBtn');
+            if (wishlistBtn) {
+                wishlistBtn.addEventListener('click', () => {
+                    wishlistBtn.classList.toggle('active');
+                    if (wishlistBtn.classList.contains('active')) {
+                        wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> Added to Wishlist';
+                        showNotification('Added to wishlist');
+                    } else {
+                        wishlistBtn.innerHTML = '<i class="far fa-heart"></i> Add to Wishlist';
+                        showNotification('Removed from wishlist');
+                    }
+                });
+            }
+
+            // Review Form
+            const reviewForm = document.getElementById('reviewForm');
+            if (reviewForm) {
+                reviewForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const rating = document.getElementById('rating').value;
+                    const comment = document.getElementById('reviewText').value;
+                    const name = document.getElementById('reviewerName').value;
+                    const email = document.getElementById('reviewerEmail').value;
+                    
+                    if (rating === '0') {
+                        showNotification('Please select a rating', 'error');
+                        return;
+                    }
+                    if (!comment || !name || !email) {
+                        showNotification('Please fill all fields', 'error');
+                        return;
+                    }
+                    
+                    showNotification('Thank you for your review!', 'success');
+                    reviewForm.reset();
+                    document.getElementById('rating').value = '0';
+                    stars.forEach(s => s.classList.remove('active'));
+                });
+            }
+        }
+
+        function attachRelatedCartHandlers() {
+            document.querySelectorAll('.related-add-to-cart').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const productId = btn.dataset.productId;
+                    const productName = btn.dataset.productName;
+                    const originalHTML = btn.innerHTML;
+                    
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    btn.disabled = true;
+                    
+                    try {
+                        const response = await window.DesiVibesAPI.cart.addToCart(productId, 1);
+                        if (response.success) {
+                            btn.innerHTML = '<i class="fas fa-check"></i> Added';
+                            setTimeout(() => {
+                                btn.innerHTML = originalHTML;
+                                btn.disabled = false;
+                            }, 2000);
+                            showNotification(`${productName} added to cart!`);
+                        }
+                    } catch (error) {
+                        btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                        setTimeout(() => {
+                            btn.innerHTML = originalHTML;
+                            btn.disabled = false;
+                        }, 2000);
+                        showNotification(error.message || 'Please login to add to cart', 'error');
+                    }
+                });
+            });
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+            notification.innerHTML = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Desi Vibes Organic Soaps</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <script src="api.js"></script>
+    <script type="module" src="components.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #e8f5f7 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Profile Section */
+        .profile-hero {
+            background: linear-gradient(rgba(26, 83, 92, 0.85), rgba(13, 60, 68, 0.9)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%23f8f9fa" width="1200" height="400"/><path fill="%234ecdc4" opacity="0.2" d="M0 200 Q300 50 600 200 T1200 200 V400 H0 Z"/></svg>');
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 15px 40px rgba(78, 205, 196, 0.4);
+            position: relative;
+        }
+        
+        .profile-avatar::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, #4ecdc4, #2d7a87, #1a535c, #4ecdc4);
+            border-radius: 50%;
+            z-index: -1;
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .profile-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+        
+        .profile-hero .welcome-text {
+            text-align: center;
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background: white;
+            padding: 3rem 0;
+            margin-top: -30px;
+            position: relative;
+            z-index: 2;
+            border-radius: 30px 30px 0 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbfc 100%);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(26, 83, 92, 0.12);
+            border-color: #4ecdc4;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #2d7a87;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* Profile Content */
+        .profile-content {
+            padding: 60px 0;
+        }
+        
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2.5rem;
+            align-items: start;
+        }
+        
+        /* Profile Info Card */
+        .profile-info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.08);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #1a535c;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #4ecdc4, #2d7a87);
+        }
+        
+        .profile-row {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(164, 210, 218, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .profile-row:hover {
+            background: linear-gradient(90deg, rgba(78, 205, 196, 0.05), rgba(45, 122, 135, 0.05));
+            padding-left: 0.5rem;
+            border-radius: 10px;
+        }
+        
+        .profile-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .profile-label {
+            font-weight: 600;
+            color: #1a535c;
+            min-width: 110px;
+            font-size: 0.9rem;
+        }
+        
+        .profile-value {
+            flex: 1;
+            color: #2d7a87;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        /* Sidebar Actions */
+        .sidebar-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .action-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.08);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(26, 83, 92, 0.12);
+            border-color: #4ecdc4;
+        }
+        
+        .action-card h3 {
+            color: #1a535c;
+            margin-bottom: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+        }
+        
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: linear-gradient(135deg, #4ecdc4 0%, #2d7a87 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .action-btn.logout {
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+        }
+        
+        .action-btn.logout:hover {
+            box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
+        }
+        
+        /* Recent Orders */
+        .recent-orders {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .recent-orders::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .recent-orders::-webkit-scrollbar-track {
+            background: rgba(164, 210, 218, 0.1);
+            border-radius: 10px;
+        }
+        
+        .recent-orders::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            border-radius: 10px;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(164, 210, 218, 0.2);
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-pending { background: rgba(255, 193, 7, 0.2); color: #856404; }
+        .status-processing { background: rgba(0, 123, 255, 0.2); color: #004085; }
+        .status-shipped { background: rgba(40, 167, 69, 0.2); color: #155724; }
+        .status-delivered { background: rgba(40, 167, 69, 0.2); color: #155724; }
+        .status-cancelled { background: rgba(220, 53, 69, 0.2); color: #721c24; }
+        
+        /* Auth Container (Login/Register) */
+        .auth-container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(26, 83, 92, 0.15);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .auth-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: #1a535c;
+            font-size: 2rem;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-tab.active {
+            color: #4ecdc4;
+            border-bottom-color: #4ecdc4;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #1a535c;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 2px solid rgba(164, 210, 218, 0.4);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #4ecdc4 0%, #2d7a87 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+        
+        .message.error {
+            background: #fee;
+            color: #c00;
+            display: block;
+        }
+        
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            display: block;
+        }
+        
+        .empty-orders {
+            text-align: center;
+            padding: 2rem;
+            color: #2d7a87;
+        }
+        
+        .empty-orders i {
+            font-size: 3rem;
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .profile-hero {
+                padding: 60px 0 40px;
+            }
+            
+            .profile-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .profile-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .profile-icon {
+                margin-bottom: 0.5rem;
+            }
+            
+            .profile-label {
+                min-width: auto;
+            }
+            
+            .auth-container {
+                margin: 40px 20px;
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main-navbar></main-navbar>
+    
+    <div id="app">
+        <!-- Dynamic content will be rendered here -->
+    </div>
+    
+    <main-footer></main-footer>
+    
+    <script>
+        const app = document.getElementById('app');
+        
+        function isLoggedIn() {
+            return !!localStorage.getItem('desi_vibes_token');
+        }
+        
+        function getCurrentUser() {
+            const userStr = localStorage.getItem('desi_vibes_user');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+        
+        // Render Login/Register Page
+        function renderAuth() {
+            app.innerHTML = `
+                <div class="auth-container">
+                    <div class="auth-header">
+                        <h2>Welcome to Desi Vibes</h2>
+                        <p style="color: #2d7a87;">Login or create an account</p>
+                    </div>
+                    <div class="auth-tabs">
+                        <div class="auth-tab active" data-tab="login">Login</div>
+                        <div class="auth-tab" data-tab="register">Register</div>
+                    </div>
+                    
+                    <div id="loginForm" class="auth-form active">
+                        <form id="loginFormElement">
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope"></i> Email Address</label>
+                                <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-lock"></i> Password</label>
+                                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                            </div>
+                            <button type="submit" class="auth-btn">Login</button>
+                        </form>
+                    </div>
+                    
+                    <div id="registerForm" class="auth-form">
+                        <form id="registerFormElement">
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Full Name</label>
+                                <input type="text" id="regName" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope"></i> Email Address</label>
+                                <input type="email" id="regEmail" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-phone"></i> Phone Number</label>
+                                <input type="tel" id="regPhone" placeholder="Enter your phone number">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-lock"></i> Password</label>
+                                <input type="password" id="regPassword" placeholder="Create a password (min 6 characters)" required>
+                            </div>
+                            <button type="submit" class="auth-btn">Create Account</button>
+                        </form>
+                    </div>
+                    
+                    <div id="message" class="message"></div>
+                </div>
+            `;
+            
+            // Tab switching
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    const tabId = tab.dataset.tab;
+                    document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+                    document.getElementById(`${tabId}Form`).classList.add('active');
+                });
+            });
+            
+            // Login handler
+            document.getElementById('loginFormElement').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const messageDiv = document.getElementById('message');
+                
+                try {
+                    const response = await window.DesiVibesAPI.auth.login(email, password);
+                    if (response.success) {
+                        messageDiv.className = 'message success';
+                        messageDiv.textContent = 'Login successful! Redirecting...';
+                        await window.DesiVibesAPI.cart.syncGuestCart();
+                        setTimeout(() => window.location.reload(), 1500);
+                    }
+                } catch (error) {
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = error.message || 'Login failed';
+                }
+            });
+            
+            // Register handler
+            document.getElementById('registerFormElement').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('regName').value;
+                const email = document.getElementById('regEmail').value;
+                const phone = document.getElementById('regPhone').value;
+                const password = document.getElementById('regPassword').value;
+                const messageDiv = document.getElementById('message');
+                
+                try {
+                    const response = await window.DesiVibesAPI.auth.register({ name, email, phone, password });
+                    if (response.success) {
+                        messageDiv.className = 'message success';
+                        messageDiv.textContent = 'Registration successful! Redirecting...';
+                        setTimeout(() => window.location.reload(), 1500);
+                    }
+                } catch (error) {
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = error.message || 'Registration failed';
+                }
+            });
+        }
+        
+        // Render User Profile
+        async function renderProfile() {
+            const user = getCurrentUser();
+            
+            // Fetch orders
+            let orders = [];
+            let stats = { total_orders: 0, total_spent: 0, total_items: 0 };
+            
+            try {
+                const response = await window.DesiVibesAPI.orders.getOrders();
+                if (response.success && response.orders) {
+                    orders = response.orders;
+                    stats.total_orders = orders.length;
+                    stats.total_spent = orders.reduce((sum, o) => sum + parseFloat(o.final_amount), 0);
+                    stats.total_items = orders.reduce((sum, o) => sum + (o.items_count || 0), 0);
+                }
+            } catch (error) {
+                console.error('Failed to fetch orders:', error);
+            }
+            
+            app.innerHTML = `
+                <!-- Hero Section -->
+                <section class="profile-hero">
+                    <div class="container">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h1>${user?.name || 'User'}</h1>
+                        <p class="welcome-text">Welcome back! Your skincare journey with Desi Vibes continues...</p>
+                    </div>
+                </section>
+                
+                <!-- Stats Section -->
+                <section class="stats-section">
+                    <div class="container">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">${stats.total_orders}</div>
+                                <div class="stat-label">Total Orders</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">₹${stats.total_spent.toLocaleString()}</div>
+                                <div class="stat-label">Total Spent</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">${stats.total_items}</div>
+                                <div class="stat-label">Items Purchased</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">✨</div>
+                                <div class="stat-label">Loyal Customer</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Profile Content -->
+                <section class="profile-content">
+                    <div class="container">
+                        <div class="profile-grid">
+                            <!-- Left Column: Profile Info -->
+                            <div>
+                                <div class="profile-info-card">
+                                    <h3 class="section-title">Account Information</h3>
+                                    <div class="profile-row">
+                                        <div class="profile-icon"><i class="fas fa-user"></i></div>
+                                        <div class="profile-label">Full Name</div>
+                                        <div class="profile-value">${user?.name || 'N/A'}</div>
+                                    </div>
+                                    <div class="profile-row">
+                                        <div class="profile-icon"><i class="fas fa-envelope"></i></div>
+                                        <div class="profile-label">Email</div>
+                                        <div class="profile-value">${user?.email || 'N/A'}</div>
+                                    </div>
+                                    <div class="profile-row">
+                                        <div class="profile-icon"><i class="fas fa-phone"></i></div>
+                                        <div class="profile-label">Phone</div>
+                                        <div class="profile-value">${user?.phone || 'Not provided'}</div>
+                                    </div>
+                                    <div class="profile-row">
+                                        <div class="profile-icon"><i class="fas fa-calendar"></i></div>
+                                        <div class="profile-label">Member Since</div>
+                                        <div class="profile-value">${user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Recently'}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="profile-info-card" style="margin-top: 1.5rem;">
+                                    <h3 class="section-title">Recent Orders</h3>
+                                    <div class="recent-orders" id="recentOrdersList">
+                                        ${orders.length === 0 ? `
+                                            <div class="empty-orders">
+                                                <i class="fas fa-shopping-bag"></i>
+                                                <p>You haven't placed any orders yet.</p>
+                                                <a href="shop.html" class="action-btn" style="display: inline-block; width: auto; margin-top: 1rem; text-decoration: none;">Start Shopping</a>
+                                            </div>
+                                        ` : orders.slice(0, 3).map(order => `
+                                            <div class="order-item">
+                                                <div>
+                                                    <strong>#${order.order_number}</strong><br>
+                                                    <small>${new Date(order.created_at).toLocaleDateString()}</small>
+                                                </div>
+                                                <span class="order-status-badge status-${order.order_status}">${order.order_status}</span>
+                                                <strong>₹${parseFloat(order.final_amount).toLocaleString()}</strong>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    ${orders.length > 3 ? `<div style="text-align: center; margin-top: 1rem;"><a href="#" style="color: #4ecdc4; text-decoration: none;">View all orders →</a></div>` : ''}
+                                </div>
+                            </div>
+                            
+                            <!-- Right Column: Actions -->
+                            <div class="sidebar-actions">
+                               
+                                
+                                <div class="action-card">
+                                    <h3><i class="fas fa-heart"></i> Quick Actions</h3>
+                                    <button class="action-btn" id="viewOrdersBtn">
+                                        <i class="fas fa-list"></i> View All Orders
+                                    </button>
+                                    <a href="track-order.html" class="action-btn" style="display: flex; text-decoration: none;">
+                                        <i class="fas fa-truck"></i> Track Order
+                                    </a>
+                                    <a href="shop.html" class="action-btn" style="display: flex; text-decoration: none; background: linear-gradient(135deg, #ff9800, #f57c00);">
+                                        <i class="fas fa-shopping-cart"></i> Continue Shopping
+                                    </a>
+                                </div>
+                                
+                                <div class="action-card">
+                                    <button class="action-btn logout" id="logoutBtn">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+            
+            // Event Listeners
+            document.getElementById('logoutBtn')?.addEventListener('click', () => {
+                window.DesiVibesAPI.logout();
+                window.location.reload();
+            });
+            
+            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
+                alert('Edit profile feature coming soon!');
+            });
+            
+            document.getElementById('changePasswordBtn')?.addEventListener('click', () => {
+                alert('Change password feature coming soon!');
+            });
+            
+            document.getElementById('viewOrdersBtn')?.addEventListener('click', () => {
+                const ordersSection = document.querySelector('.recent-orders');
+                if (ordersSection) {
+                    ordersSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+        
+        // Initialize
+        if (isLoggedIn()) {
+            renderProfile();
+        } else {
+            renderAuth();
+        }
+    </script>
+</body>
+</html>
