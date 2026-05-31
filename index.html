@@ -892,27 +892,27 @@
             container.innerHTML = productsToShow
               .map(
                 (product) => `
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="${product.image_url || "https://via.placeholder.com/300"}" 
-                             alt="${escapeHtml(product.name)}" 
-                             loading="lazy" 
-                             onerror="this.src='https://via.placeholder.com/300'">
-                        ${product.original_price > product.sale_price ? '<span class="sale-badge">Sale!</span>' : ""}
-                    </div>
-                    <div class="product-info">
-                        <span class="product-category">${escapeHtml(product.category || "ORGANIC SOAP")}</span>
-                        <a href="product.html?id=${product.id}" class="product-title">${escapeHtml(product.name)}</a>
-                        <div class="product-price">
-                            ${product.original_price > product.sale_price ? `<span class="original-price">₹${product.original_price}</span>` : ""}
-                            <span class="current-price">₹${product.sale_price}</span>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="${product.image_url || "https://via.placeholder.com/300"}" 
+                                 alt="${escapeHtml(product.name)}" 
+                                 loading="lazy" 
+                                 onerror="this.src='https://via.placeholder.com/300'">
+                            ${product.original_price > product.sale_price ? '<span class="sale-badge">Sale!</span>' : ""}
                         </div>
-                        <button class="add-to-cart-btn" data-product-id="${product.id}" data-product-name="${escapeHtml(product.name)}">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </button>
+                        <div class="product-info">
+                            <span class="product-category">${escapeHtml(product.category || "ORGANIC SOAP")}</span>
+                            <a href="product.html?id=${product.id}" class="product-title">${escapeHtml(product.name)}</a>
+                            <div class="product-price">
+                                ${product.original_price > product.sale_price ? `<span class="original-price">₹${product.original_price}</span>` : ""}
+                                <span class="current-price">₹${product.sale_price}</span>
+                            </div>
+                            <button class="add-to-cart-btn" data-product-id="${product.id}" data-product-name="${escapeHtml(product.name)}">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
                     </div>
-                </div>
-            `,
+                `,
               )
               .join("");
 
@@ -940,12 +940,12 @@
 
       function attachCartHandlers() {
         document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
-          // Remove existing listener to avoid duplicates
           btn.removeEventListener("click", handleAddToCart);
           btn.addEventListener("click", handleAddToCart);
         });
       }
 
+      // UPDATED: handleAddToCart with immediate cart badge update
       async function handleAddToCart(e) {
         const btn = e.currentTarget;
         const productId = btn.dataset.productId;
@@ -960,6 +960,7 @@
             productId,
             1,
           );
+
           if (response.success) {
             btn.innerHTML = '<i class="fas fa-check"></i> Added!';
             setTimeout(() => {
@@ -967,6 +968,18 @@
               btn.disabled = false;
             }, 2000);
             showNotification(`${productName} added to cart!`);
+
+            // IMPORTANT: Manually trigger cart update event to refresh badge
+            document.dispatchEvent(
+              new CustomEvent("cartUpdated", {
+                detail: { total_items: response.cart_count },
+              }),
+            );
+
+            // Also update window cart count if function exists
+            if (window.updateCartCount) {
+              await window.updateCartCount();
+            }
           }
         } catch (error) {
           btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
@@ -989,55 +1002,66 @@
         setTimeout(() => notification.remove(), 3000);
       }
 
-      async function handleAddToCart(e) {
-        const btn = e.currentTarget;
-        const productId = btn.dataset.productId;
-        const productName = btn.dataset.productName;
-        const originalHTML = btn.innerHTML;
+      // Add this after your existing handleAddToCart function
 
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
-        btn.disabled = true;
+      // Function to manually update cart badge anywhere on the page
+      function updateAllCartBadges() {
+        // Get cart count from localStorage or API
+        let count = 0;
+        const guestCart = JSON.parse(
+          localStorage.getItem("desi_vibes_guest_cart") || "[]",
+        );
+        count = guestCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
-        try {
-          const response = await window.DesiVibesAPI.cart.addToCart(
-            productId,
-            1,
-          );
-          if (response.success) {
-            btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-            setTimeout(() => {
-              btn.innerHTML = originalHTML;
-              btn.disabled = false;
-            }, 2000);
-            showNotification(`${productName} added to cart!`);
+        console.log("Updating cart badges to:", count);
+
+        // Update all cart count elements on the page
+        const allCartCounts = document.querySelectorAll(
+          ".cart-count, #cartCount, .cart-badge",
+        );
+        allCartCounts.forEach((el) => {
+          if (el) {
+            el.textContent = count;
+            // Add bounce animation
+            el.classList.add("cart-bounce");
+            setTimeout(() => el.classList.remove("cart-bounce"), 500);
           }
-        } catch (error) {
-          btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
-          setTimeout(() => {
-            btn.innerHTML = originalHTML;
-            btn.disabled = false;
-          }, 2000);
-          showNotification(
-            error.message || "Please login to add to cart",
-            "error",
-          );
+        });
+
+        // Also update mobile cart count if exists
+        const mobileCartSpan = document.querySelector("#mobileCartCount");
+        if (mobileCartSpan) {
+          mobileCartSpan.textContent = count;
         }
       }
 
-      function showNotification(message, type = "success") {
-        const notification = document.createElement("div");
-        notification.className = `notification ${type === "error" ? "error" : ""}`;
-        notification.innerHTML = message;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 3000);
-      }
+      // Override the addToCart function to update badge immediately
+      const originalAddToCart = window.DesiVibesAPI.cart.addToCart;
+      window.DesiVibesAPI.cart.addToCart = async function (
+        productId,
+        quantity,
+      ) {
+        const result = await originalAddToCart(productId, quantity);
 
-      function escapeHtml(text) {
-        if (!text) return "";
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
-      }
+        // Update badges immediately
+        setTimeout(() => {
+          updateAllCartBadges();
+        }, 50);
+
+        return result;
+      };
+
+      // Also update when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        updateAllCartBadges();
+      });
+
+      // Update when localStorage changes (for cross-tab sync)
+      window.addEventListener("storage", function (e) {
+        if (e.key === "desi_vibes_guest_cart") {
+          updateAllCartBadges();
+        }
+      });
 
       // Smooth scrolling for anchor links
       document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
