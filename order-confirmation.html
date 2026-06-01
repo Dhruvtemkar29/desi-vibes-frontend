@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Desi Vibes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="api.js"></script>
+    <script type="module" src="components.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #e8f5f7 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.1);
+            border: 1px solid rgba(164, 210, 218, 0.3);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .success-icon i {
+            font-size: 40px;
+            color: white;
+        }
+
+        h1 {
+            color: #1a535c;
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .order-number {
+            background: #f8fbfc;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(164, 210, 218, 0.3);
+        }
+
+        .order-number p {
+            color: #2d7a87;
+            margin-bottom: 5px;
+        }
+
+        .order-number h3 {
+            color: #1a535c;
+            font-size: 24px;
+            letter-spacing: 2px;
+        }
+
+        .order-details {
+            text-align: left;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8fbfc;
+            border-radius: 12px;
+        }
+
+        .order-details p {
+            margin: 8px 0;
+            color: #2d7a87;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4ecdc4, #2d7a87);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        .btn-outline {
+            border: 2px solid #4ecdc4;
+            color: #4ecdc4;
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: #4ecdc4;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+            
+            .confirmation-card {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main-navbar></main-navbar>
+
+    <div class="container" id="confirmationContainer">
+        <div class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading order details...</p>
+        </div>
+    </div>
+
+    <main-footer></main-footer>
+
+    <script>
+        // Get order number from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderNumber = urlParams.get('order');
+        
+        async function loadOrderDetails() {
+            const container = document.getElementById('confirmationContainer');
+            
+            if (!orderNumber) {
+                container.innerHTML = `
+                    <div class="confirmation-card">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h1>Order Placed Successfully!</h1>
+                        <p>Thank you for shopping with Desi Vibes</p>
+                        <div class="btn-group">
+                            <a href="account.html" class="btn btn-primary">View My Orders</a>
+                            <a href="shop.html" class="btn btn-outline">Continue Shopping</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                // Fetch order details from backend
+                const response = await window.DesiVibesAPI.orders.trackOrder(orderNumber);
+                
+                if (response.success && response.order) {
+                    const order = response.order;
+                    const items = response.items || [];
+                    
+                    container.innerHTML = `
+                        <div class="confirmation-card">
+                            <div class="success-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h1>Order Placed Successfully!</h1>
+                            <p>Thank you for shopping with Desi Vibes</p>
+                            
+                            <div class="order-number">
+                                <p>Your Order Number</p>
+                                <h3>${order.order_number}</h3>
+                            </div>
+                            
+                            <div class="order-details">
+                                <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleDateString()}</p>
+                                <p><strong>Payment Method:</strong> ${order.payment_method.toUpperCase()}</p>
+                                <p><strong>Payment Status:</strong> ${order.payment_status}</p>
+                                <p><strong>Order Status:</strong> ${order.order_status}</p>
+                                <p><strong>Total Amount:</strong> ₹${order.final_amount}</p>
+                                <p><strong>Shipping Address:</strong> ${order.shipping_address || 'Not provided'}</p>
+                            </div>
+                            
+                            <div class="order-details">
+                                <p><strong>Items Ordered:</strong></p>
+                                ${items.map(item => `
+                                    <p style="margin-left: 15px;">• ${item.product_name} × ${item.quantity} = ₹${item.total_price}</p>
+                                `).join('')}
+                            </div>
+                            
+                            <p>We've sent a confirmation email to your registered email address.</p>
+                            <p style="margin-top: 10px;">You can track your order status from your account dashboard.</p>
+                            
+                            <div class="btn-group">
+                                <a href="track-order.html?order=${order.order_number}" class="btn btn-primary"><i class="fas fa-truck"></i> Track Order</a>
+                                <a href="account.html" class="btn btn-outline"><i class="fas fa-user"></i> My Orders</a>
+                                <a href="shop.html" class="btn btn-outline"><i class="fas fa-shopping-cart"></i> Continue Shopping</a>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Order not found');
+                }
+            } catch (error) {
+                console.error('Failed to load order:', error);
+                container.innerHTML = `
+                    <div class="confirmation-card">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h1>Order Placed Successfully!</h1>
+                        <p>Your order has been confirmed. Order #${orderNumber}</p>
+                        <div class="btn-group">
+                            <a href="account.html" class="btn btn-primary">View My Orders</a>
+                            <a href="shop.html" class="btn btn-outline">Continue Shopping</a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        loadOrderDetails();
+    </script>
+</body>
+</html>
